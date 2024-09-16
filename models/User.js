@@ -1,19 +1,26 @@
-import bcrypt from "bcryptjs"
-
+import bcrypt from "bcryptjs";
 import mongoose from "mongoose";
 
 const userSchema = mongoose.Schema(
   {
-    name: {
+    firstName: {
       type: String,
-      requiered: true,
+      required: true,
     },
-    email: String,
+    lastName: {
+      type: String,
+      required: true,
+    },
+    email: {
+      type: String,
+      required: true,
+    },
     password: {
       type: String,
-      requiered: true,
+      required: true,
     },
     address: String,
+    avatar: String,
     phone: Number,
     deletedAt: {
       type: Date,
@@ -22,14 +29,21 @@ const userSchema = mongoose.Schema(
   },
   {
     timestamps: true,
+    toJSON: {
+      virtuals: true,
+    },
   }
 );
 
- userSchema.pre("save", async function(next) {
-  const hash = await bcrypt.hash(this.password,10)
-  this.password = hash
-  next()
- })
+userSchema.virtual("fullName").get(function () {
+  return this.firstName + " " + this.lastName;
+});
+
+userSchema.pre("save", async function (next) {
+  const hash = await bcrypt.hash(this.password, 10);
+  this.password = hash;
+  next();
+});
 
 const User = mongoose.model("User", userSchema);
 

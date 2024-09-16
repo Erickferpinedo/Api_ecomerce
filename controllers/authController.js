@@ -10,8 +10,8 @@ async function login(req, res){
     const match = await bcrypt.compare(req.body.password, user.password)
     if(match){
         //return res.json("te damos la bienvenida")
-      const token =  jwt.sign({prueba: "123", id: user.id }, process.env.JWT_SECRET);
-      return res.json(token)
+      const token =  jwt.sign({ id: user.id }, process.env.JWT_SECRET);
+      return res.json({token})
     } 
    }
    return res.json("credenciales invalidadas")

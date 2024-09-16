@@ -25,19 +25,24 @@ async function getAll(req, res) {
   }
   
   async function create(req, res) {
-    const hash = await bcrypt.hash(req.bpdy.password, 10)
     try {
+      const { firstName, lastName, email, password,address, age } = req.body;
+      const avatar = req.file.filename;
+  
       const newUser = await User.create({
-        name: req.body.name,
-        email: req.body.email,
-        password:  req.body.password, 
-        address:  req.body.address,
-        phone: req.body.phone
+        firstName,
+        lastName,
+        email,
+        password,
+        address,
+        age,
+        avatar,
       });
-      return res.status(201).json(newUser);
+  
+      return res.status(201).json("User created!");
     } catch (error) {
-      
-      return res.status(501).json("Error en el servidor");
+      console.log(error);
+      return res.status(500).json("Internal server error");
     }
   }
   
