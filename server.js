@@ -5,14 +5,18 @@ import express from "express";
 import connectDB from "./config/database.js";
 import userRoutes from "./routes/userRoutes.js";
 import authRoutes from "./routes/authRoutes.js";
+import { fileURLToPath } from 'url';
+import productRoutes from "./routes/productRoutes.js";
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const app = express();
 app.use(express.json());
 connectDB();
 
 
-const uploadDir = path.join(import.meta.dirname, "public/avatars");
+const uploadDir = path.join(__dirname, "public/avatars");
 
 if (!fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir, { recursive: true });
@@ -20,6 +24,8 @@ if (!fs.existsSync(uploadDir)) {
 //rutas
 app.use(userRoutes);
 app.use(authRoutes);
+app.use(productRoutes);
+
 
 app.listen(3000, () => {
   console.log("El servidor está corriendo en el puerto 3000");
