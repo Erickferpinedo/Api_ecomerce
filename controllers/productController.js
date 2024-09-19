@@ -1,78 +1,101 @@
 import Product from "../models/product.js";
-import User from "../models/product.js";
 
-async function getAll(req, res) {
-    try {
-      const product = await Product.find({ deletedAt: null });
-      return res.json(product);
-    } catch (error) {
-      console.log(error);
-      return res.status(404).json("Productos no encontrados");
+// Get all products
+export async function getAll(req, res) {
+  try {
+    const products = await Product.find({ deletedAt: null }); // 'products' instead of 'product'
+    return res.json(products);
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Error retrieving products" });
+  }
+}
+
+// Get product by ID
+export async function getById(req, res) {
+  try {
+    const product = await Product.findById(req.params.id);
+    
+    if (!product || product.deletedAt) { // Ensure the product exists and is not deleted
+      return res.status(404).json({ message: "Product not found" });
     }
-  }
 
-  async function getById(req, res) {
-    try {
-      const product = await Product.findById(req.params.id);
-      return res.json(Product);
-    } catch (error) {
-      console.log(error);
-      return res.status(404).json("Producto no encontrado");
+    return res.json(product);
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Error retrieving product" });
+  }
+}
+
+// Create a new product
+export async function create(req, res) {
+  try {
+    const { productID, name, description, price, stock, categoryID } = req.body;
+
+    const newProduct = await Product.create({
+      productID,
+      name,
+      description,
+      price,
+      stock,
+      categoryID
+    });
+
+    return res.status(201).json({ message: "Product created successfully", product: newProduct });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+}
+
+// Update a product by ID
+export async function update(req, res) {
+  try {
+    const productToUpdate = await Product.findById(req.params.id);
+
+    if (!productToUpdate || productToUpdate.deletedAt) {
+      return res.status(404).json({ message: "Product not found" });
     }
+
+    const { productID, name, description, price, stock, categoryID } = req.body;
+
+    // Use Object.assign to update fields in one step
+    Object.assign(productToUpdate, {
+      productID: productID || productToUpdate.productID,
+      name: name || productToUpdate.name,
+      description: description || productToUpdate.description,
+      price: price || productToUpdate.price,
+      stock: stock || productToUpdate.stock,
+      categoryID: categoryID || productToUpdate.categoryID
+    });
+
+    await productToUpdate.save();
+
+    return res.json({ message: "Product updated successfully", product: productToUpdate });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Internal server error" });
   }
+}
 
+// Soft delete a product
+export async function deleted(req, res) {
+  try {
+    const productToDelete = await Product.findById(req.params.id);
 
-  export async function create(req, res) {
-    try {
-      const { Name, description, price, stock } = req.body;
-  
-      const newProduct = await Product.create({
-        Name,
-         description,
-          price,
-           stock,
-      });
-  
-      return res.status(201).json("Producto fue creado");
-    } catch (error) {
-      console.log(error);
-      return res.status(500).json("Internal server error");
+    if (!productToDelete || productToDelete.deletedAt) {
+      return res.status(404).json({ message: "Product not found or already deleted" });
     }
+
+    productToDelete.deletedAt = Date.now();
+    await productToDelete.save();
+
+    return res.json({ message: "Product deleted successfully" });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Internal server error" });
   }
-
-
-  export async function update(req, res) {
-    const userToUpdate = await User.findById(req.params.id);
-  
-    if (userToUpdate !== null) {
-      const { name, email, password, address, phone} = req.body;
-  
-      userToUpdate.name = name || userToUpdate.name;
-      userToUpdate.email = email || userToUpdate.email;
-      userToUpdate.password = password || userToUpdate.password;
-      userToUpdate.address = address || userToUpdate.address;
-      userToUpdate.phone = phone || userToUpdate.phone;
-  
-      await userToUpdate.save();
-  
-      return res.json("El usuario ha sifo actualizo");
-    } else {
-      return res.json("No existe usuario con el ID mencionado");
-    }
-  }
-  
-  export async function destroy(req, res) {
-    const userDelete = await User.findById(req.params.id);
-  
-    userDelete.deletedAt = Date.now();
-    userDelete.save();
-  
-    return res.json("El user se ha eliminado");
-  }
-  
- 
-
-
+}
 
 
 

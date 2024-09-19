@@ -5,7 +5,7 @@ const productSchema = new mongoose.Schema(
     productID: {
       type: String,
       required: true,
-      unique: true, // Ensures that each product ID is unique
+      unique: true, 
     },
     name: {
       type: String,
@@ -30,7 +30,7 @@ const productSchema = new mongoose.Schema(
     },
   },
   {
-    timestamps: true, // Automatically manages createdAt and updatedAt fields
+    timestamps: true, 
   }
 );
 

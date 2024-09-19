@@ -6,6 +6,7 @@ import connectDB from "./config/database.js";
 import userRoutes from "./routes/userRoutes.js";
 import authRoutes from "./routes/authRoutes.js";
 import { fileURLToPath } from 'url';
+import product from "./routes/productRoutes.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -23,7 +24,8 @@ if (!fs.existsSync(uploadDir)) {
 //rutas
 app.use(userRoutes);
 app.use(authRoutes);
-app.use();
+app.use(productRoutes);
+
 
 app.listen(3000, () => {
   console.log("El servidor está corriendo en el puerto 3000");
