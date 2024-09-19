@@ -1,7 +1,7 @@
 import Product from "../models/product.js";
 
 // Get all products
-export async function getAll(req, res) {
+ export const getAll = async (req, res) => {
   try {
     const products = await Product.find({ deletedAt: null }); // 'products' instead of 'product'
     return res.json(products);
@@ -12,7 +12,7 @@ export async function getAll(req, res) {
 }
 
 // Get product by ID
-export async function getById(req, res) {
+export const getById = async (req, res) => {
   try {
     const product = await Product.findById(req.params.id);
     
@@ -28,7 +28,7 @@ export async function getById(req, res) {
 }
 
 // Create a new product
-export async function create(req, res) {
+ export const create = async (req, res) => {
   try {
     const { productID, name, description, price, stock, categoryID } = req.body;
 
@@ -40,6 +40,8 @@ export async function create(req, res) {
       stock,
       categoryID
     });
+    
+    console.log("product succesfully created ");
 
     return res.status(201).json({ message: "Product created successfully", product: newProduct });
   } catch (error) {
@@ -49,7 +51,7 @@ export async function create(req, res) {
 }
 
 // Update a product by ID
-export async function update(req, res) {
+ export const update = async (req, res) => {
   try {
     const productToUpdate = await Product.findById(req.params.id);
 
@@ -79,7 +81,7 @@ export async function update(req, res) {
 }
 
 // Soft delete a product
-export async function deleted(req, res) {
+ export const deleted = async (req, res ) => {
   try {
     const productToDelete = await Product.findById(req.params.id);
 
@@ -96,6 +98,7 @@ export async function deleted(req, res) {
     return res.status(500).json({ message: "Internal server error" });
   }
 }
+
 
 
 

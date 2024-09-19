@@ -23,12 +23,12 @@ const productSchema = new mongoose.Schema(
       type: Number,
       required: true,
     },
-    categoryID: {
+   // categoryID: {
     //  type: mongoose.Schema.Types.ObjectId, //  Reference to the Category model
      // ref: "Category", //  Assuming a "Category" model exists
       // required: true,
     },
-  },
+  //},
   {
     timestamps: true, 
   }
