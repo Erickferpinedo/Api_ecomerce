@@ -23,6 +23,7 @@ if (!fs.existsSync(uploadDir)) {
 //rutas
 app.use(userRoutes);
 app.use(authRoutes);
+app.use();
 
 app.listen(3000, () => {
   console.log("El servidor está corriendo en el puerto 3000");
