@@ -7,6 +7,7 @@ import userRoutes from "./routes/userRoutes.js";
 import authRoutes from "./routes/authRoutes.js";
 import { fileURLToPath } from 'url';
 import productRoutes from "./routes/productRoutes.js";
+import pedidoRoutes from "./routes/pedidoRoutes.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -25,7 +26,7 @@ if (!fs.existsSync(uploadDir)) {
 app.use(userRoutes);
 app.use(authRoutes);
 app.use(productRoutes);
-
+app.use(pedidoRoutes);
 
 app.listen(3000, () => {
   console.log("El servidor está corriendo en el puerto 3000");
