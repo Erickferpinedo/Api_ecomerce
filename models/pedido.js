@@ -17,7 +17,7 @@ const pedidoSchema = new mongoose.Schema(
       required: true,
       ref: "User",  // Reference the User model
     },
-    Total: {
+    total: {
       type: Number,  // Store as a number for calculations
       required: true,
     },
