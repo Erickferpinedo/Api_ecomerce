@@ -30,17 +30,16 @@ export const getById = async (req, res) => {
 // Crear un nuevo pedido
 export const create = async (req, res) => {
   try {
-    const { pedidoID, fechapedido, userID, total, estado } = req.body;
+    const { pedidoID, fechapedido, total, estado } = req.body;
 
     // Validar los campos requeridos
-    if (!pedidoID || !fechapedido || !userID || !total || !estado) {
+    if (!pedidoID || !fechapedido || !total || !estado) {
       return res.status(400).json({ message: "Todos los campos son obligatorios" });
     }
 
     const newPedido = await Pedido.create({
       pedidoID,
       fechapedido,
-      userID,
       total,
       estado,
     });
@@ -58,21 +57,30 @@ export const update = async (req, res) => {
   try {
     const pedidoToUpdate = await Pedido.findById(req.params.id);
 
+    // Verificar si el pedido existe y no está marcado como eliminado
     if (!pedidoToUpdate || pedidoToUpdate.deletedAt) {
-      return res.status(404).json({ message: "Pedido no encontrado" });
+      return res.status(404).json({ message: "Pedido no encontrado o ya eliminado" });
     }
 
-    const { pedidoID, fechapedido, userID, total, estado } = req.body;
+    const { pedidoID, fechapedido, total, estado } = req.body;
 
-    // Usar el operador spread para actualizar los campos
-    Object.assign(pedidoToUpdate, {
+    // Si el nuevo pedidoID es diferente del actual, verificar que no esté duplicado
+    if (pedidoID && pedidoID !== pedidoToUpdate.pedidoID) {
+      const existingPedido = await Pedido.findOne({ pedidoID });
+      if (existingPedido) {
+        return res.status(409).json({ message: "El nuevo pedidoID ya está en uso" });
+      }
+    }
+
+    // Actualizar los campos del pedido solo si están presentes en el body
+    pedidoToUpdate.set({
       pedidoID: pedidoID || pedidoToUpdate.pedidoID,
       fechapedido: fechapedido || pedidoToUpdate.fechapedido,
-      userID: userID || pedidoToUpdate.userID,
       total: total || pedidoToUpdate.total,
       estado: estado || pedidoToUpdate.estado,
     });
 
+    // Guardar los cambios en la base de datos
     await pedidoToUpdate.save();
 
     return res.json({ message: "Pedido actualizado exitosamente", pedido: pedidoToUpdate });
