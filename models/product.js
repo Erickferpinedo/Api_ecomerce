@@ -23,10 +23,10 @@ const productSchema = new mongoose.Schema(
       type: Number,
       required: true,
     },
-   // categoryID: {
-    //  type: mongoose.Schema.Types.ObjectId, //  Reference to the Category model
-     // ref: "Category", //  Assuming a "Category" model exists
-      // required: true,
+     //category: {
+      //type: mongoose.Schema.Types.ObjectId, //  Reference to the Category model
+      //ref: "Category", //  Assuming a "Category" model exists
+    //   required: true,
     },
   //},
   {
